@@ -16,8 +16,8 @@ N_gt = 280; 			# Number of grating periods
 L_gt = N_gt*L_pd;		# Grating length
 W_ox = 3e-6; L_ex = 5e-6; 	# simulation size margins
 L_total = L_gt+2*L_ex;
-material_Si = ’Si (Silicon) - Dispersive & Lossless’;
-material_BOX = ’SiO2 (Glass) - Const’;
+material_Si = "Si (Silicon) - Dispersive & Lossless";
+material_BOX = "SiO2 (Glass) - Const";
 # Constant index materials lead to more stable simulations 
 #DRAW
 ############
@@ -26,48 +26,48 @@ materials;
 
 # Oxide Substrate 
 addrect;
-set (’x min’,-L_ex); set(’x max’,L_gt+L_ex);
-set (’y’, 0e-6); set(’y span’, W_ox);
-set (’z min’, -thick_BOX); set (’z max’, -thick_Si/2);
-set (’material’ , material_BOX);
-set (’name’,’oxide’);
+set ("x min",-L_ex); set("x max",L_gt+L_ex);
+set ("y", 0e-6); set("y span", W_ox);
+set ("z min", -thick_BOX); set ("z max", -thick_Si/2);
+set ("material" , material_BOX);
+set ("name","oxide");
 # Input Waveguide
 addrect;
-set (’x min’, -L_ex); set (’x max’, 0);
-set (’y’, 0); set (’y span’ , width_ridge);
-set ( ’z’, 0); set(’z span’, thick_Si);
-set (’material’, material_Si);
-set (’name’, ’input_wg’);
+set ("x min", -L_ex); set ("x max", 0);
+set ("y", 0); set ("y span" , width_ridge);
+set ( "z", 0); set("z span", thick_Si);
+set ("material", material_Si);
+set ("name", "input_wg");
 # Bragg Grating
 addrect;
-set (’x min’, 0); set (’xmax’,L_pd/2);
-set (’y’,0); set (’y span’, width_ridge+Delta_W);
-set (’z’,0); set (’z span’, thick_Si);
-set (’material’, material_Si);
-set (’name’, ’grt_big’);
+set ("x min", 0); set ("xmax",L_pd/2);
+set ("y",0); set ("y span", width_ridge+Delta_W);
+set ("z",0); set ("z span", thick_Si);
+set ("material", material_Si);
+set ("name", "grt_big");
 addrect;
-set (’x min’, L_pd/2); set (’x max’, L_pd);
-set (’y’, 0); set(’y span’, width_ridge-Delta_W);
-set (’z’, 0); set(’z span’, thick_Si);
-set (’material’, material_Si);
-set (’name’, ’grt_small’);
-selectpartial (’grt’);
-addtogroup(’grt_cell’);
-select(’grt_cell’);
+set ("x min", L_pd/2); set ("x max", L_pd);
+set ("y", 0); set("y span", width_ridge-Delta_W);
+set ("z", 0); set("z span", thick_Si);
+set ("material", material_Si);
+set ("name", "grt_small");
+selectpartial ("grt");
+addtogroup("grt_cell");
+select("grt_cell");
 redrawoff;
 for (i=1: N_gt-1) {
  copy (L_pd);
 }
-selectpartial (’grt_cell’);
-addtogroup (’bragg’);
+selectpartial ("grt_cell");
+addtogroup ("bragg");
 redrawon;
 # Output WG
 addrect;
-set (’x min’,L_gt); set(’x_max’, L_gt+L_ex);
-set (’y’, 0); set (’y span’ , width_ridge);
-set (’z’ , 0); set (’z span’, thick_Si);
-set (’material’, material_Si);
-set (’name’,’output_wg’);
+set ("x min",L_gt); set("x_max", L_gt+L_ex);
+set ("y", 0); set ("y span" , width_ridge);
+set ("z" , 0); set ("z span", thick_Si);
+set ("material", material_Si);
+set ("name","output_wg");
 # SIMULATION SETUP
 #######################################
 lambda_min = 1.5e-6;
@@ -80,14 +80,15 @@ mesh_override_dy = 50e-9;
 mesh_override_dz = 20e-9;
 # FDTD
 addfdtd;
-set (’dimension’, ’3D’);
-set (’simulation time’,sim_time);
-set (’x min’, -L_ex+1e-6); set (’x max’ , L_gt+L_ex-1e-6);
-set (’y’, 0e-6); set (’y span’, 2e-6);
-set (’z’,0); set (’z span’,1.8e-6);
-set (’mesh accuracy’ , Mesh_level);
-set (’x min bc’, ’PML’); set (’x max bc’,’PML);
-set (’y min bc’, ’PML’); set (’y max bc’,’PML);
-set (’z min bc’, ’PML’); set (’z max bc’,’PML);
+set ("dimension", "3D");
+set ("simulation time",sim_time);
+set ("x min", -L_ex+1e-6); set ("x max" , L_gt+L_ex-1e-6);
+set ("y", 0e-6); set ("y span", 2e-6);
+set ("z",0); set ("z span",1.8e-6);
+set ("mesh accuracy" , Mesh_level);
+set ("x min bc", "PML"); set ("x max bc","PML");
+set ("y min bc", "PML"); set ("y max bc","PML");
+set ("z min bc", "PML"); set ("z max bc","PML");
 # add symmetry planes to reduce the simulation time
-# set ( ’y min bc’,’Anti-Symmetric’); set(’force symmetric y mesh’,1);
+# set ( "y min bc","Anti-Symmetric"); set("force symmetric y mesh",1);
+

@@ -92,3 +92,31 @@ set ("z min bc", "PML"); set ("z max bc","PML");
 # add symmetry planes to reduce the simulation time
 # set ( "y min bc","Anti-Symmetric"); set("force symmetric y mesh",1);
 
+# Mesh Override
+if (1) {
+addmesh;
+set ("x min", 0e-6); set("x max", L_gt);
+set ("y",0); set ("y span", width_ridge+Delta_W);
+set ("z",0); set("z span", thick_Si+2*mesh_override_dz);
+set ("dx", mesh_override_dx);
+set ("dy", mesh_override_dy);
+set ("dz", mesh_override_dz);
+}
+# MODE Source
+addmode;
+set ("injection axis","x-axis");
+set ("mode slection","fundamental mode");
+set ("x",-2e-6);
+set ("y",0); set("y span",2.5e-6);
+set ("z",0); set("z span",2e-6);
+set ("wavelength start", lambda_min);
+set ("wavelength stop", lambda_max);
+# Time Monitors
+addtime;
+set ("name", "tmonitor_r");
+set ("monitor type", "point");
+set ("x", -3e-6); set("y",0); set("z",0);
+addtime;
+set ("name","tmonitor_t");
+set ("monitor type", "point");
+set ("x", L_gt+3e-6); set("y",0); set("z",0);

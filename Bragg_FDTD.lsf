@@ -8,7 +8,7 @@
 ###############################
 thick_Si = 0.22e-6;
 thick_BOX = 2e-6;
-Width_ridge = 0.5e-6; 		# Waveguide Width
+width_ridge = 0.5e-6; 		# Waveguide Width
 ##editing from here.....................
 Delta_W = 50e-9; 		# Corrugation width
 L_pd = 324e-9; 			# Grating period
@@ -20,10 +20,9 @@ material_Si = "Si (Silicon) - Dispersive & Lossless";
 material_BOX = "SiO2 (Glass) - Const";
 # Constant index materials lead to more stable simulations 
 #DRAW
-############
-newproject; switchlayout;
+ ###############################################
+newproject; switchtolayout;
 materials;
-
 # Oxide Substrate 
 addrect;
 set ("x min",-L_ex); set("x max",L_gt+L_ex);
@@ -33,14 +32,14 @@ set ("material" , material_BOX);
 set ("name","oxide");
 # Input Waveguide
 addrect;
-set ("x min", -L_ex); set ("x max", 0);
-set ("y", 0); set ("y span" , width_ridge);
-set ( "z", 0); set("z span", thick_Si);
+set ("x min",-L_ex); set("x max",0);
+set ("y",0); set("y span",width_ridge);
+set ("z", 0); set("z span", thick_Si);
 set ("material", material_Si);
 set ("name", "input_wg");
 # Bragg Grating
 addrect;
-set ("x min", 0); set ("xmax",L_pd/2);
+set ("x min", 0); set ("x max",L_pd/2);
 set ("y",0); set ("y span", width_ridge+Delta_W);
 set ("z",0); set ("z span", thick_Si);
 set ("material", material_Si);
@@ -63,7 +62,7 @@ addtogroup ("bragg");
 redrawon;
 # Output WG
 addrect;
-set ("x min",L_gt); set("x_max", L_gt+L_ex);
+set ("x min",L_gt); set("x max", L_gt+L_ex);
 set ("y", 0); set ("y span" , width_ridge);
 set ("z" , 0); set ("z span", thick_Si);
 set ("material", material_Si);
@@ -91,7 +90,6 @@ set ("y min bc", "PML"); set ("y max bc","PML");
 set ("z min bc", "PML"); set ("z max bc","PML");
 # add symmetry planes to reduce the simulation time
 # set ( "y min bc","Anti-Symmetric"); set("force symmetric y mesh",1);
-
 # Mesh Override
 if (1) {
 addmesh;
@@ -105,7 +103,7 @@ set ("dz", mesh_override_dz);
 # MODE Source
 addmode;
 set ("injection axis","x-axis");
-set ("mode slection","fundamental mode");
+set ("mode selection","fundamental mode");
 set ("x",-2e-6);
 set ("y",0); set("y span",2.5e-6);
 set ("z",0); set("z span",2e-6);
@@ -117,6 +115,57 @@ set ("name", "tmonitor_r");
 set ("monitor type", "point");
 set ("x", -3e-6); set("y",0); set("z",0);
 addtime;
+set ("name","tmonitor_m");
+set ("monitor type", "point");
+set ("x", L_gt/2); set("y",0); set("z",0);
+addtime;
 set ("name","tmonitor_t");
 set ("monitor type", "point");
 set ("x", L_gt+3e-6); set("y",0); set("z",0);
+# Frequency Monitor
+addpower;
+set ("name", "t");
+set ("monitor type","2D X-normal");
+set ("x",L_gt+2.5e-6);
+set ("y",0); set ("y span",2.5e-6);
+set ("z",0); set ("z span",2e-6);
+set ("override global monitor settings",1);
+set ("use source limits",1);
+set ("use wavelength spacing",1);
+set ("frequency points", freq_points);
+
+addpower;
+set ("name","r");
+set ("monitor type","2D X-normal");
+set ("x",-2.5e-6);
+set ("y",0); set ("y span",2.5e-6);
+set ("z",0); set ("z span",2e-6);
+set ("override global monitor settings",1);
+set ("use source limits",1);
+set ("use wavelength spacing",1);
+set ("frequency points", freq_points);
+# Top-View electric field profile
+if (0) {addprofile;
+set ("name","field");
+set ("monitor type","2D Z-normal");
+set ("x min",-2e-6); set("x max",L_gt+2e-6);
+set ("y",0); set ("y span",1.2e-6);
+set ("z",0);
+set ("override global monitor settings",1);
+set ("use source limits",1);
+set ("use wavelength spacing",1);
+set ("frequency points", 21);
+}
+# save and run
+#############################
+save("Bragg_FDTD");
+run;
+# Analysis
+###############################################
+transmission_sim=transmission("t");
+reflection_sim=transmission("r");
+wavelength_sim=3e8/getdata("t","f");
+plot(wavelength_sim*1e9, 10*log10(transmission_sim), 10*log10(abs(reflection_sim)),
+ "wavelength (nm)","response");
+legend("T", "R");
+matlabsave("Bragg_FDTD");
